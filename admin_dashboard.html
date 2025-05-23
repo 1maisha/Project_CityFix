@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - CityFix</title>
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <script>
+      // Check if accessed through login page
+      if (!sessionStorage.getItem("loggedIn")) {
+        const password = prompt("Enter admin password to access this page:");
+        if (password !== "cityfix123") {
+          alert("Access denied!");
+          window.location.href = "Home.html";
+        } else {
+          sessionStorage.setItem("loggedIn", true);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="admin-container">
+      <aside class="sidebar"> 
+        <ul>
+          <li>
+            <a class="active" href="admin_dashboard.html"
+              ><i class="fas fa-chart-line"></i> Dashboard</a
+            >
+          </li>
+          <li>
+            <a href="manage_complaints.html"
+              ><i class="fas fa-exclamation-circle"></i> Manage Complaints</a
+            >
+          </li>
+          <li>
+            <a href="manage_users.html"
+              ><i class="fas fa-users-cog"></i> Manage Users</a
+            >
+          </li>
+        </ul>
+      </aside>
+
+      <main class="main-content">
+        <h1>Dashboard Overview</h1>
+        <div class="dashboard-cards">
+          <div class="card">
+            <h3>Total Complaints</h3>
+            <p id="totalComplaints">Loading...</p>
+          </div>
+          <div class="card">
+            <h3>Resolved Complaints</h3>
+            <p id="resolvedComplaints">Loading...</p>
+          </div>
+          <div class="card">
+            <h3>Active Users</h3>
+            <p id="activeUsers">Loading...</p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      function loadDashboardCounts() {
+        fetch("dashboard_counts.php")
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("totalComplaints").textContent =
+              data.total_complaints;
+            document.getElementById("resolvedComplaints").textContent =
+              data.resolved_complaints;
+            document.getElementById("activeUsers").textContent =
+              data.active_users;
+          })
+          .catch((error) => {
+            console.error("Error fetching dashboard data:", error);
+          });
+      }
+      // Initial load
+      loadDashboardCounts();
+
+      // Auto-refresh every 10 seconds (10000 ms)
+      setInterval(loadDashboardCounts, 5000);
+    </script>
+  </body>
+</html>

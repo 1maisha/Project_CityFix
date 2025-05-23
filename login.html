@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CityCare - Login</title>
+  <link rel="stylesheet" href="login.css"> 
+</head>
+<body>
+  <section class="login-section">
+
+    <div class="login-container">
+
+      <h2>Login to CityFix</h2>
+      <form action="login.php" method="POST">
+        
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="email"><b></b>Email</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div style="position: relative;">
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <span onclick="togglePassword()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+            👁️
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <button type="submit">Log in</button>
+        </div>
+
+        <div class="signup-link">
+          <p>Don't have an account? <a href="signup.html">Sign in here</a>.</p>
+        </div>
+      </form>
+    </div>
+  </section>
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    }
+  </script>
+  
+</body>
+</html>

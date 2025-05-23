@@ -1,0 +1,94 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-image: url('city.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 150vh; 
+  }
+  
+  .login-section {
+    background-color: rgba(255, 255, 255, 0.5); 
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .login-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #106218; 
+    text-align: center;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-group input:focus {
+    border-color: #000000; 
+  }
+
+  .form-group span {
+    user-select: none;
+    font-size: 1.2em;
+  }  
+  
+  .form-group button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #075f14; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .form-group button:hover {
+    background-color: #0cab2c; 
+  }
+  
+  .signup-link {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .signup-link a {
+    color: #d91212; 
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .signup-link a:hover {
+    color: #0cab2c; 
+  }

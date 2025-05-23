@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CityFix - Manage Complaints</title>
+    <link rel="stylesheet" href="manage_complaints.css" />
+    <script>
+      if (!sessionStorage.getItem("loggedIn")) {
+        const password = prompt("Enter admin password to access this page:");
+        if (password !== "cityfix123") {
+          alert("Access denied!");
+          window.location.href = "Home.html";
+        } else {
+          sessionStorage.setItem("loggedIn", true);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo">
+        <img src="project logo.png" alt="Logo" />
+        <span style="font-size: large">CityFix</span>
+      </div>
+    </header>
+
+    <div class="container">
+      <h1>🚧 Manage Complaints</h1>
+      <div style="text-align: right; margin-bottom: 10px;">
+        <input type="text" id="searchInput" placeholder="Search by location or description" style="padding: 8px; width: 300px; border-radius: 5px; border: 2px solid #070707;" />
+      </div>
+      
+      <table class="complaints-table">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>User ID</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>Image</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="complaintsTableBody"></tbody>
+      </table>
+    </div>
+
+    <script>
+      if (!sessionStorage.getItem("loggedIn")) {
+        const password = prompt("Enter admin password to access this page:");
+        if (password !== "cityfix123") {
+          alert("Access denied!");
+          window.location.href = "Home.html";
+        } else {
+          sessionStorage.setItem("loggedIn", true);
+        }
+      }
+    
+      let originalData = [];
+    
+      // Update status color based on value
+      function updateStatusColor(selectElement) {
+        selectElement.classList.remove(
+          "status-pending",
+          "status-in-progress",
+          "status-resolved"
+        );
+    
+        switch (selectElement.value.toLowerCase()) {
+          case "pending":
+            selectElement.classList.add("status-pending");
+            break;
+          case "in progress":
+            selectElement.classList.add("status-in-progress");
+            break;
+          case "resolved":
+            selectElement.classList.add("status-resolved");
+            break;
+        }
+      }
+    
+      // Fetch data from PHP
+      fetch("admin_fetchComplaints.php")
+        .then((res) => res.json())
+        .then((data) => {
+          originalData = data;
+          displayTable(data);
+        })
+        .catch((err) => console.error("Fetch error:", err));
+    
+      // Display table rows
+      function displayTable(data) {
+        const table = document.getElementById("complaintsTableBody");
+        table.innerHTML = "";
+    
+        data.forEach((row) => {
+          const tr = document.createElement("tr");
+    
+          tr.innerHTML = `
+            <td>${row.complaint_No}</td>
+            <td>${row.user_id}</td>
+            <td>${row.description}</td>
+            <td>${row.location}</td>
+            <td><img src="images/${row.image_path}" alt="Complaint" class="complaint-image" /></td>
+            <td>
+              <select class="status-select" data-id="${row.complaint_No}">
+                <option value="Pending" ${row.status === "Pending" ? "selected" : ""}>Pending</option>
+                <option value="In Progress" ${row.status === "In Progress" ? "selected" : ""}>In Progress</option>
+                <option value="Resolved" ${row.status === "Resolved" ? "selected" : ""}>Resolved</option>
+              </select>
+            </td>
+            <td><button class="delete-btn" data-id="${row.complaint_No}">Delete</button></td>
+          `;
+    
+          table.appendChild(tr);
+        });
+    
+        // Add event listeners for status change
+        document.querySelectorAll(".status-select").forEach((select) => {
+          updateStatusColor(select);
+          select.addEventListener("change", function () {
+            const id = this.dataset.id;
+            const status = this.value;
+    
+            updateStatusColor(this);
+    
+            fetch("update_status.php", {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: `id=${id}&status=${encodeURIComponent(status)}`
+            });
+          });
+        });
+    
+        // Add delete button logic
+        document.querySelectorAll(".delete-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const id = this.dataset.id;
+            if (confirm("Delete complaint No. " + id + "?")) {
+              fetch("delete_complaint.php?id=" + id, { method: "DELETE" }).then(() =>
+                location.reload()
+              );
+            }
+          });
+        });
+      }
+    
+      // Add search functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput");
+        if (searchInput) {
+          searchInput.addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            const filtered = originalData.filter(row =>
+              row.description.toLowerCase().includes(query) ||
+              row.location.toLowerCase().includes(query)
+            );
+            displayTable(filtered);
+          });
+        }
+      });
+    </script>
+    
+  </body>
+</html>

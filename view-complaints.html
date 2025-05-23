@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Complaints</title>
+  <link rel="stylesheet" href="view_complaints.css">
+</head>
+<body>
+  <h2 style="text-align:center; color: rgb(252, 251, 251);background-color: rgb(157, 6, 6);" >All Reported Complaints</h2>
+  <div style="text-align: right;  padding-right: 40px;">
+    <input type="text" id="searchInput" placeholder="Search by location or description..." style="padding: 8px; width: 300px; border-radius: 6px; border: 3px solid #f68da0;">
+  </div>
+  
+  <div class="complaints-grid" id="allComplaintsGrid"></div>
+
+  <script>
+    fetch('fetch_all_complaints.php')
+      .then(response => response.json())
+      .then(data => {
+        const grid = document.getElementById("allComplaintsGrid");
+        data.forEach(item => {
+          grid.innerHTML += `
+            <div class="complaint-card">
+              <img src="${item.image_path}" class="complaint-image" />
+              <div class="complaint-details">
+                <h3>${item.description}</h3>
+                <p class="status">Status: <span class="${item.status === 'Resolved' ? 'resolved' : 'pending'}">${item.status}</span></p>
+                <p class="location">Location: ${item.location}</p>
+              </div>
+            </div>
+          `;
+        });
+      });
+
+      
+  let allComplaints = [];
+
+  function renderComplaints(data) {
+    const grid = document.getElementById("allComplaintsGrid");
+    grid.innerHTML = ''; // Clear existing content
+    data.forEach(item => {
+      grid.innerHTML += `
+        <div class="complaint-card">
+          <img src="${item.image_path}" class="complaint-image" />
+          <div class="complaint-details">
+            <h3>${item.description}</h3>
+            <p class="status">Status: <span class="${item.status === 'Resolved' ? 'resolved' : 'pending'}">${item.status}</span></p>
+            <p class="location">Location: ${item.location}</p>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // Fetch and store complaints
+  fetch('fetch_all_complaints.php')
+    .then(response => response.json())
+    .then(data => {
+      allComplaints = data;
+      renderComplaints(allComplaints);
+    });
+
+  // Filter on input
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      const filtered = allComplaints.filter(item =>
+        item.description.toLowerCase().includes(query) ||
+        item.location.toLowerCase().includes(query)
+      );
+      renderComplaints(filtered);
+    });
+  });
+
+
+  </script>
+</body>
+</html>
